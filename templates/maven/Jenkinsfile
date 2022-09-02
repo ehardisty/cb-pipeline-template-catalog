@@ -4,43 +4,45 @@ pipeline {
       inheritFrom "maven"
     }
   }
+  
   stages {
-    stage('Agent') {
-      stages {
-        stage ('Build and Analysis') {
-          steps {
-            container ('maven') {
-              sh 'mvn -Duser.home=/var/maven -V -q -e clean verify -Dmaven.test.failure.ignore'
-            }
-          }
+    stage ('Build and Analysis') {
+      steps {
+        container ('maven') {
+          sh 'mvn -Duser.home=/var/maven -V -q -e clean verify -Dmaven.test.failure.ignore'
         }
-        stage ('Test') {
-          when {
-            anyOf {
-              branch 'main'
-              branch 'pr-*'
-            }
-          }
-          steps {
-             container ('maven') {
-               sh 'mvn -Duser.home=/var/maven -q test'
-             }
-          }
-          post {
-            always {
-              junit 'target/surefire-reports/*.xml'
-            }
-          }
+      }
+      post {
+        always {
+          archive 'target/pmd.xml'
         }
-        stage ('Deliver') {
-          when {
-            branch 'main'
+      }
+    }
+    stage ('Test') {
+      when {
+        anyOf {
+          branch 'main'
+          branch 'pr-*'
+        }
+      }
+      steps {
+          container ('maven') {
+            sh 'mvn -Duser.home=/var/maven -q test'
           }
-          steps {
-            container ('maven') {
-              sh './jenkins/scripts/deliver.sh'
-            }
-          }
+      }
+      post {
+        always {
+          junit 'target/surefire-reports/*.xml'
+        }
+      }
+    }
+    stage ('Deliver') {
+      when {
+        branch 'main'
+      }
+      steps {
+        container ('maven') {
+          sh './jenkins/scripts/deliver.sh'
         }
       }
     }
