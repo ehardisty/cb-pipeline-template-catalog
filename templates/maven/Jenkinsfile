@@ -15,6 +15,7 @@ pipeline {
               sh 'mvn -Duser.home=/var/maven -V -q -e clean verify -Dmaven.test.failure.ignore'
             }
           }
+        }
         stage ('Test') {
           when {
             anyOf {
