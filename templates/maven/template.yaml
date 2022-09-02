@@ -10,11 +10,11 @@ parameters:
   - name: repository
     type: string
     displayName: GitHub Repository
-    defaultValue: simple-java-maven-app
+    defaultValue: cb-simple-java-maven-app
   - name: githubCredentialId
     displayName: GitHub Credential ID
     type: CREDENTIALS
-    defaultValue: cloudbees-ci-workshop-github-app
+    defaultValue: github-credentials
 multibranch:
   markerFile: cloudbees-ci.yml 
   branchSource:
