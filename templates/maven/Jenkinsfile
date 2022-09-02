@@ -6,9 +6,7 @@ pipeline {
   }
   stages {
     stage('Agent') {
-      agent { label 'maven' }
       stages {
-        
         stage ('Build and Analysis') {
           steps {
             container ('maven') {
